@@ -24,7 +24,7 @@ jobs:
 
       - name: Cache NDK r10e
         id: cache-ndk
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ndk/android-ndk-r10e
           key: android-ndk-r10e-v2
@@ -58,7 +58,7 @@ jobs:
           find engine/build -iname "*.so" -exec cp {} artifacts/ \; 2>/dev/null || true
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: green-engine-android-so
           path: artifacts/
@@ -66,7 +66,7 @@ jobs:
 
       - name: Upload full build log on failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: build-log
           path: engine/build/config.log
