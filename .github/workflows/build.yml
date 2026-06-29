@@ -42,14 +42,18 @@ jobs:
         working-directory: engine
         run: |
           export ANDROID_NDK_HOME="${{ github.workspace }}/ndk/android-ndk-r10e"
-          export PATH=$PATH:$ANDROID_NDK_HOME/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin
+          export PATH=$ANDROID_NDK_HOME/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin:$PATH
+          # Очистка флагов хост-системы
+          unset CFLAGS
+          unset LDFLAGS
+          # Запуск конфигурации без лишних тестов
           python3 waf configure -v -T release --togles --android=armeabi-v7a-hard,4.9,21
 
       - name: Build engine
         working-directory: engine
         run: |
           export ANDROID_NDK_HOME="${{ github.workspace }}/ndk/android-ndk-r10e"
-          export PATH=$PATH:$ANDROID_NDK_HOME/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin
+          export PATH=$ANDROID_NDK_HOME/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin:$PATH
           python3 waf build -v -j$(nproc)
 
       - name: Collect artifacts
