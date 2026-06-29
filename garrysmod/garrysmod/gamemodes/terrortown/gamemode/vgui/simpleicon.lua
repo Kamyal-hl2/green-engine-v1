@@ -39,19 +39,19 @@ function PANEL:ApplySchemeSettings()
 end
 
 function PANEL:OnCursorEntered()
-   self.PaintOverOld = self.Icon.PaintOver
-   self.Icon.PaintOver = self.PaintOverHovered
+   self.PaintOverOld = self.PaintOver
+   self.PaintOver = self.PaintOverHovered
 end
 
 function PANEL:OnCursorExited()
-   if self.Icon.PaintOver == self.PaintOverHovered then
-      self.Icon.PaintOver = self.PaintOverOld
+   if self.PaintOver == self.PaintOverHovered then
+      self.PaintOver = self.PaintOverOld
    end
 end
 
 function PANEL:PaintOverHovered()
 
-   if self:GetParent().animPress:Active() then return end
+   if self.animPress:Active() then return end
 
    surface.SetDrawColor( 255, 255, 255, 80 )
    surface.SetMaterial( matHover )

@@ -2,11 +2,10 @@
 TOOL.AddToMenu = false
 TOOL.ClientConVar[ "type" ] = "0"
 TOOL.ClientConVar[ "name" ] = "0"
-TOOL.ClientConVar[ "override" ] = ""
 
 TOOL.Information = { { name = "left" } }
 
-function TOOL:LeftClick( trace )
+function TOOL:LeftClick( trace, attach )
 
 	local type = self:GetClientNumber( "type", 0 )
 	local name = self:GetClientInfo( "name" )
@@ -29,12 +28,9 @@ function TOOL:LeftClick( trace )
 		if ( gmod_npcweapon != "" ) then
 			weapon = gmod_npcweapon
 		else
-			local NPCinfo = list.GetEntry( "NPC", name )
+			local NPCinfo = list.Get( "NPC" )[ name ]
 			weapon = table.Random( NPCinfo and NPCinfo.Weapons or {} ) or ""
 		end
-
-		local override = self:GetOwner():GetInfo( "creator_override" )
-		if ( override != "" ) then weapon = override end
 
 		Spawn_NPC( self:GetOwner(), name, weapon, trace )
 

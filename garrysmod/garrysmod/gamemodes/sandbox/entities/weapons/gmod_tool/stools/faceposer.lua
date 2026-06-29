@@ -28,6 +28,12 @@ local function IsUselessFaceFlex( strName )
 
 end
 
+local function GenerateDefaultFlexValue( ent, flexID )
+	local min, max = ent:GetFlexBounds( flexID )
+	if ( !max || max - min == 0 ) then return 0 end
+	return ( 0 - min ) / ( max - min )
+end
+
 function TOOL:FacePoserEntity()
 	return self:GetWeapon():GetNWEntity( 1 )
 end
@@ -61,13 +67,11 @@ function TOOL:Think()
 
 	local FlexNum = ent:GetFlexNum()
 	if ( FlexNum <= 0 ) then return end
-	if ( FlexNum > MAXSTUDIOFLEXCTRL ) then FlexNum = MAXSTUDIOFLEXCTRL end
 
-	for i = 0, FlexNum - 1 do
+	for i = 0, FlexNum do
 
 		local num = self:GetClientNumber( "flex" .. i )
-		local min, max = ent:GetFlexBounds( i )
-		ent:SetFlexWeight( i, math.Remap( num, min, max, 0, 1 ) )
+		ent:SetFlexWeight( i, num )
 
 	end
 
@@ -92,7 +96,6 @@ function TOOL:RightClick( trace )
 
 	local FlexNum = ent:GetFlexNum()
 	if ( FlexNum == 0 ) then return false end
-	if ( FlexNum > MAXSTUDIOFLEXCTRL ) then FlexNum = MAXSTUDIOFLEXCTRL end
 
 	if ( SERVER ) then
 
@@ -108,12 +111,12 @@ function TOOL:RightClick( trace )
 
 	for i = 0, FlexNum - 1 do
 
-		local Weight = 0
+		local Weight = "0.0"
+
 		if ( !ent:HasFlexManipulatior() ) then
-			Weight = 0
+			Weight = GenerateDefaultFlexValue( ent, i )
 		elseif ( i <= FlexNum ) then
-			local min, max = ent:GetFlexBounds( i )
-			Weight = math.Remap( ent:GetFlexWeight( i ), 0, 1, min, max )
+			Weight = ent:GetFlexWeight( i )
 		end
 
 		self:GetOwner():ConCommand( "faceposer_flex" .. i .. " " .. Weight )
@@ -149,7 +152,7 @@ if ( SERVER ) then
 
 	local function CC_Face_Randomize( ply, command, arguments )
 
-		for i = 0, MAXSTUDIOFLEXCTRL - 1 do
+		for i = 0, MAXSTUDIOFLEXCTRL do
 			local num = math.Rand( 0, 1 )
 			ply:ConCommand( "faceposer_flex" .. i .. " " .. string.format( "%.3f", num ) )
 		end
@@ -163,7 +166,7 @@ end
 -- The rest of the code is clientside only, it is not used on server
 if ( SERVER ) then return end
 
-for i = 0, MAXSTUDIOFLEXCTRL - 1 do
+for i = 0, MAXSTUDIOFLEXCTRL do
 	TOOL.ClientConVar[ "flex" .. i ] = "0"
 end
 
@@ -189,8 +192,8 @@ function TOOL.BuildCPanel( CPanel, faceEntity )
 	QuickFace:SetAutoHeight( true )
 
 	local Clear = {}
-	for i = 0, MAXSTUDIOFLEXCTRL - 1 do
-		Clear[ "faceposer_flex" .. i ] = 0
+	for i = 0, MAXSTUDIOFLEXCTRL do
+		Clear[ "faceposer_flex" .. i ] = GenerateDefaultFlexValue( faceEntity, i )
 	end
 	QuickFace:AddMaterialEx( "#faceposer.clear", "vgui/face/clear", nil, Clear )
 
@@ -348,19 +351,17 @@ function TOOL.BuildCPanel( CPanel, faceEntity )
 		if ( !IsUselessFaceFlex( name ) ) then
 			local group = faceEntity:GetFlexType( i )
 
-			if ( group == name ) then group = language.GetPhrase( "#spawnmenu.category.other" ) end
+			if ( group == name ) then group = "#spawnmenu.category.other" end
 
 			local min, max = faceEntity:GetFlexBounds( i )
 
-			flexGroups[ group ] = flexGroups[ group ] or { sortId = table.Count( flexGroups ), items = {} }
-			table.insert( flexGroups[ group ].items, { name = name, id = i, min = min, max = max, default = 0 } )
+			flexGroups[ group ] = flexGroups[ group ] or {}
+			table.insert( flexGroups[ group ], { name = name, id = i, min = min, max = max } )
 		end
 	end
 
 	local flexControllers = {}
-	local moreThanOneGroup = table.Count( flexGroups ) > 1
-	for group, groupData in SortedPairsByMemberValue( flexGroups, "sortId" ) do
-		local items = groupData.items
+	for group, items in pairs( flexGroups ) do
 
 		local groupForm = vgui.Create( "DForm", CPanel )
 		groupForm:SetLabel( string.NiceName( group ) )
@@ -369,15 +370,18 @@ function TOOL.BuildCPanel( CPanel, faceEntity )
 		groupForm.GetBackgroundColor = function() return color_white end
 
 		function groupForm:Paint( w, h )
+
 			derma.SkinHook( "Paint", "CategoryList", self, w, h )
 			derma.SkinHook( "Paint", "CollapsibleCategory", self, w, h )
+
 		end
 
 		CPanel:AddItem( groupForm )
 
-		for id, item in SortedPairsByMemberValue( items, "id" ) do
+		for id, item in pairs( items ) do
+
 			local ctrl = groupForm:NumSlider( string.NiceName( item.name ), "faceposer_flex" .. item.id, item.min, item.max )
-			ctrl:SetDefaultValue( item.default )
+			ctrl:SetDefaultValue( GenerateDefaultFlexValue( faceEntity, item.id ) )
 			ctrl:SetHeight( 11 ) -- This makes the controls all bunched up like how we want
 			ctrl:DockPadding( 0, -6, 0, -4 ) -- Try to make the lower part of the text visible
 			ctrl.originalName = item.name
@@ -387,34 +391,6 @@ function TOOL.BuildCPanel( CPanel, faceEntity )
 				ctrl:SetEnabled( false )
 				ctrl:SetTooltip( "#tool.faceposer.too_many_flexes" )
 			end
-		end
-
-		-- Per category random/clear
-		if ( moreThanOneGroup ) then
-			local btnContainer = vgui.Create( "Panel", groupForm )
-			btnContainer:SetHeight( 22 )
-
-			local btnRnd = vgui.Create( "DButton", btnContainer )
-			btnRnd:SetText( "#tool.faceposer.randomize" )
-			btnRnd:Dock( FILL )
-			btnRnd.DoClick = function()
-				for id, item in pairs( items ) do
-					local num = math.Rand( item.min, item.max )
-					LocalPlayer():ConCommand( "faceposer_flex" .. item.id .. " " .. string.format( "%.2f", num ) )
-				end
-			end
-
-			local btnClear = vgui.Create( "DButton", btnContainer )
-			btnClear:SetText( "#faceposer.clear" )
-			btnClear:DockMargin( 8, 0, 0, 0 )
-			btnClear:Dock( RIGHT )
-			btnClear.DoClick = function()
-				for id, item in pairs( items ) do
-					LocalPlayer():ConCommand( "faceposer_flex" .. item.id .. " " .. string.format( "%.2f", item.default ) )
-				end
-			end
-
-			groupForm:AddItem( btnContainer )
 		end
 
 		-- HACK: Add some padding to the bottom of the list, because Dock won't

@@ -276,7 +276,7 @@ function RADAR.CreateMenu(parent, frame)
    dscan:SetSize(bw, bh)
    dscan:SetText(GetTranslation("radar_scan"))
    dscan.DoClick = function(s)
-                      s:SetEnabled(false)
+                      s:SetDisabled(true)
                       RunConsoleCommand("ttt_radar_scan")
                       frame:Close()
                    end
@@ -299,9 +299,9 @@ function RADAR.CreateMenu(parent, frame)
 
    dform.Think = function(s)
                     if RADAR.enable or not owned then
-                       dscan:SetEnabled(false)
+                       dscan:SetDisabled(true)
                     else
-                       dscan:SetEnabled(true)
+                       dscan:SetDisabled(false)
                     end
                  end
 

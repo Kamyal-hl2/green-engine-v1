@@ -12,7 +12,7 @@ if CLIENT then
    SWEP.EquipMenuData = {
       type = "item_weapon",
       desc = "defuser_desc"
-   }
+   };
 
    SWEP.Icon                 = "vgui/ttt/icon_defuser"
 end
@@ -75,9 +75,9 @@ if CLIENT then
       return self.BaseClass.Initialize(self)
    end
 
-   function SWEP:DrawWorldModel(flags)
+   function SWEP:DrawWorldModel()
       if not IsValid(self:GetOwner()) then
-         self:DrawModel(flags)
+         self:DrawModel()
       end
    end
 end

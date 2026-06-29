@@ -1,18 +1,11 @@
 
 local spawnmenu_border = CreateConVar( "spawnmenu_border", "0.1", { FCVAR_ARCHIVE }, "Amount of empty space around the Sandbox spawn menu." )
-local spawnmenu_toggle = CreateConVar( "spawnmenu_toggle", "0", { FCVAR_ARCHIVE }, "Tapping Q or C will toggle spawnmenu or contextmenu on and off, without having to hold the button." )
 
 include( "toolmenu.lua" )
 include( "contextmenu.lua" )
 include( "creationmenu.lua" )
 
 local PANEL = {}
-
-AccessorFunc( PANEL, "m_bHangOpen", "HangOpen" )
-
--- For backwards compatibility. Why were these ever named like this?
-PANEL.HangOpen = PANEL.SetHangOpen
-PANEL.HangingOpen = PANEL.GetHangOpen
 
 function PANEL:Init()
 
@@ -32,7 +25,7 @@ function PANEL:Init()
 	self.CreateMenu = vgui.Create( "CreationMenu", self.HorizontalDivider )
 	self.HorizontalDivider:SetLeft( self.CreateMenu )
 
-	self:SetHangOpen( false )
+	self.m_bHangOpen = false
 
 	self:SetMouseInputEnabled( true )
 
@@ -79,17 +72,41 @@ function PANEL:GetCreationMenu()
 
 end
 
+--[[---------------------------------------------------------
+	Name: OnClick
+-----------------------------------------------------------]]
 function PANEL:OnMousePressed()
 
 	self:Close()
 
 end
 
+--[[---------------------------------------------------------
+	Name: HangOpen
+-----------------------------------------------------------]]
+function PANEL:HangOpen( bHang )
+
+	self.m_bHangOpen = bHang
+
+end
+
+--[[---------------------------------------------------------
+	Name: HangingOpen
+-----------------------------------------------------------]]
+function PANEL:HangingOpen()
+
+	return self.m_bHangOpen
+
+end
+
+--[[---------------------------------------------------------
+	Name: Paint
+-----------------------------------------------------------]]
 function PANEL:Open()
 
 	RestoreCursorPosition()
 
-	self:SetHangOpen( false )
+	self.m_bHangOpen = false
 
 	-- If the context menu is open, try to close it..
 	if ( IsValid( g_ContextMenu ) && g_ContextMenu:IsVisible() ) then
@@ -116,10 +133,13 @@ function PANEL:Open()
 
 end
 
+--[[---------------------------------------------------------
+	Name: Paint
+-----------------------------------------------------------]]
 function PANEL:Close()
 
-	if ( self:GetHangOpen() ) then
-		self:SetHangOpen( false )
+	if ( self.m_bHangOpen ) then
+		self.m_bHangOpen = false
 		return
 	end
 
@@ -157,7 +177,7 @@ function PANEL:StartKeyFocus( pPanel )
 
 	self.m_pKeyFocus = pPanel
 	self:SetKeyboardInputEnabled( true )
-	self:SetHangOpen( true )
+	self:HangOpen( true )
 
 end
 
@@ -236,13 +256,7 @@ end
 hook.Add( "OnGamemodeLoaded", "CreateSpawnMenu", CreateSpawnMenu )
 concommand.Add( "spawnmenu_reload", CreateSpawnMenu )
 
-local spawnMenuLastOpen = 0
-
 function GM:OnSpawnMenuOpen()
-
-	-- Already open (toggle)
-	if ( spawnmenu_toggle:GetBool() && g_SpawnMenu and g_SpawnMenu:IsVisible() ) then return end
-	spawnMenuLastOpen = SysTime()
 
 	-- Let the gamemode decide whether we should open or not..
 	if ( !hook.Call( "SpawnMenuOpen", self ) ) then return end
@@ -258,25 +272,10 @@ end
 
 function GM:OnSpawnMenuClose()
 
-	if ( spawnmenu_toggle:GetBool() && SysTime() - spawnMenuLastOpen < 0.180 ) then return end
-
 	if ( IsValid( g_SpawnMenu ) ) then g_SpawnMenu:Close() end
 	hook.Call( "SpawnMenuClosed", self )
 
 end
-
-hook.Add( "OnPauseMenuShow", "CloseSpawnMenuWhenInMainMenu", function()
-	-- If the main menu is open, close the spawn menu & context menu
-	if ( IsValid( g_SpawnMenu ) and g_SpawnMenu:IsVisible() ) then
-		g_SpawnMenu:SetHangOpen( false )
-		g_SpawnMenu:Close()
-	end
-
-	if ( IsValid( g_ContextMenu ) and g_ContextMenu:IsVisible() ) then
-		g_ContextMenu:SetHangOpen( false )
-		g_ContextMenu:Close()
-	end
-end )
 
 --[[---------------------------------------------------------
 	Name: HOOK SpawnMenuKeyboardFocusOn

@@ -79,8 +79,6 @@ function PANEL:SetSearchType( stype, hookname )
 
 		if ( g_SpawnMenu:IsVisible() ) then return hook.Run( "OnSpawnMenuClose" ) end
 
-		if ( gui.IsGameUIVisible() ) then return end
-
 		hook.Run( "OnSpawnMenuOpen" )
 		hook.Run( "OnTextEntryGetFocus", self.Search )
 
@@ -91,7 +89,7 @@ function PANEL:SetSearchType( stype, hookname )
 		-- If we don't call this we'd have to press F1 twice to close it!
 		-- It's in a timer because of some good reason that!
 		--
-		timer.Simple( 0.1, function() g_SpawnMenu:SetHangOpen( false ) end )
+		timer.Simple( 0.1, function() g_SpawnMenu:HangOpen( false ) end )
 
 		self.ContentPanel:SwitchPanel( self.PropPanel )
 

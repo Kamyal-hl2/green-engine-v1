@@ -15,7 +15,7 @@ function CreateTransferMenu(parent)
    local bw, bh = 100, 20
    local dsubmit = vgui.Create("DButton", dform)
    dsubmit:SetSize(bw, bh)
-   dsubmit:SetEnabled(false)
+   dsubmit:SetDisabled(true)
    dsubmit:SetText(GetTranslation("xfer_send"))
 
    local selected_sid64 = nil
@@ -24,7 +24,7 @@ function CreateTransferMenu(parent)
    dpick.OnSelect = function(s, idx, val, data)
                        if data then
                           selected_sid64 = data
-                          dsubmit:SetEnabled(true)
+                          dsubmit:SetDisabled(false)
                        end
                     end
 
@@ -49,7 +49,7 @@ function CreateTransferMenu(parent)
 
    dsubmit.Think = function(s)
                       if LocalPlayer():GetCredits() < 1 then
-                         s:SetEnabled(false)
+                         s:SetDisabled(true)
                       end
                    end
 

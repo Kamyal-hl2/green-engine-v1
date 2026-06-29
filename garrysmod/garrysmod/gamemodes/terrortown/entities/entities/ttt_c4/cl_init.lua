@@ -98,7 +98,7 @@ function ShowC4Config(bomb)
    dgrab:SetPos(m*6, m*5)
    dgrab:SetSize(bw, bh)
    dgrab:SetText(T("c4_remove_pickup"))
-   dgrab:SetEnabled(true)
+   dgrab:SetDisabled(false)
    dgrab.DoClick = function()
                       if not LocalPlayer() or not LocalPlayer():Alive() then return end
 
@@ -112,7 +112,7 @@ function ShowC4Config(bomb)
    ddestroy:SetPos(w - m*4 - bw - m*6, m*5)
    ddestroy:SetSize(bw, bh)
    ddestroy:SetText(T("c4_remove_destroy1"))
-   ddestroy:SetEnabled(true)
+   ddestroy:SetDisabled(false)
    ddestroy.Confirmed = false
    ddestroy.DoClick = function(s)
                          if not LocalPlayer() or not LocalPlayer():Alive() then return end
@@ -175,7 +175,7 @@ local wire_colors = {
    Color(255, 255, 255, 255), -- white/grey
    Color( 20, 200,  20, 255), -- green
    Color(255, 160,  50, 255)  -- brown
-}
+};
 
 function PANEL:Init()
    self.BaseClass.Init(self)
@@ -213,7 +213,7 @@ function PANEL:OnCursorExited()
 end
 
 function PANEL:DoClick()
-   if not self:GetParent():IsEnabled() then return end
+   if self:GetParent():GetDisabled() then return end
 
    self.IsCut = true
 
@@ -282,7 +282,7 @@ vgui.Register( "DisarmPanel", PANEL, "DPanel" )
 
 
 surface.CreateFont("C4Timer", {
-                      font = "Tahoma",
+                      font = "TabLarge",
                       size = 30,
                       weight = 750
                    })
@@ -357,7 +357,7 @@ function ShowC4Disarm(bomb)
    dgrab:SetSize(bw, bh)
    dgrab:CenterHorizontal()
    dgrab:SetText(T("c4_remove_pickup"))
-   dgrab:SetEnabled(false)
+   dgrab:SetDisabled(true)
    dgrab.DoClick = function()
                       if (not LocalPlayer():Alive()) then return end
                       RunConsoleCommand("ttt_c4_pickup", bomb:EntIndex())
@@ -369,7 +369,7 @@ function ShowC4Disarm(bomb)
    ddestroy:SetSize(bw, bh)
    ddestroy:CenterHorizontal()
    ddestroy:SetText(T("c4_remove_destroy1"))
-   ddestroy:SetEnabled(false)
+   ddestroy:SetDisabled(true)
    ddestroy.Confirmed = false
    ddestroy.DoClick = function(s)
                          if not LocalPlayer():Alive() then return end
@@ -431,8 +431,8 @@ function ShowC4Disarm(bomb)
                        dstatus:SizeToContents()
                        dstatus:CenterHorizontal()
 
-                       ddestroy:SetEnabled(true)
-                       dgrab:SetEnabled(true)
+                       ddestroy:SetDisabled(false)
+                       dgrab:SetDisabled(false)
                     end
 
    disarm_fail = function()
@@ -441,7 +441,7 @@ function ShowC4Disarm(bomb)
 
    on_wire_cut = function(idx)
                     if IsValid(dbomb) then
-                       dbomb:SetEnabled(false)
+                       dbomb:SetDisabled(true)
                        -- disabled lowers alpha, looks weird here so work around
                        -- that
                        dbomb:SetAlpha(255)

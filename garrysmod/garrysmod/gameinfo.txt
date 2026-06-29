@@ -1,6 +1,6 @@
 "GameInfo"
 {
-	game	"Garry's Mod"
+	game	"Garry's Mod 13 SDK post-patch"
 	title	""
 	title2	""
 	type	multiplayer_only
@@ -16,7 +16,7 @@
 	FileSystem
 	{
 		SteamAppId				4000
-		ToolsAppId				211
+		ToolsAppId				243750
 
 		SearchPaths
 		{

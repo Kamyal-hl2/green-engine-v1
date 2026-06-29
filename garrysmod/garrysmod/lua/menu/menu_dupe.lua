@@ -16,7 +16,7 @@ function ws_dupe:FetchLocal( offset, perpage )
 			file	= "dupes/" .. v,
 			name	= v:StripExtension(),
 			preview	= "dupes/" .. v:StripExtension() .. ".jpg",
-			description	= language.GetPhrase( "dupes.local_description" )
+			description	= "Local duplication stored on your computer. Local content can be deleted in the main menu."
 		}
 
 		table.insert( saves, entry )
@@ -44,7 +44,6 @@ end
 --
 concommand.Add( "dupe_publish", function( ply, cmd, args )
 
-	if ( !args[1] || !args[2] ) then return end
 	ws_dupe:Publish( args[1], args[2] )
 	gui.ActivateGameUI()
 

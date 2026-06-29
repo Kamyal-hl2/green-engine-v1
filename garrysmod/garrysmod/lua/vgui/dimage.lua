@@ -146,10 +146,9 @@ function PANEL:SizeToContents()
 
 end
 
-function PANEL:Paint( w, h )
+function PANEL:Paint()
 
-	-- HACK: Gotta keep these "or"s for legacy addon code
-	self:PaintAt( 0, 0, w or self:GetWide(), h or self:GetTall() )
+	self:PaintAt( 0, 0, self:GetWide(), self:GetTall() )
 
 end
 
@@ -210,10 +209,11 @@ function PANEL:PaintAt( x, y, dw, dh )
 
 		surface.DrawTexturedRect( OffX + x, OffY + y, w, h )
 
-	else
-		surface.DrawTexturedRect( x, y, dw, dh )
+		return true
+
 	end
 
+	surface.DrawTexturedRect( x, y, dw, dh )
 	return true
 
 end
@@ -221,7 +221,7 @@ end
 function PANEL:GenerateExample( ClassName, PropertySheet, Width, Height )
 
 	local ctrl = vgui.Create( ClassName )
-	ctrl:SetImage( "gui/tool.png" )
+	ctrl:SetImage( "brick/brick_model" )
 	ctrl:SetSize( 200, 200 )
 
 	PropertySheet:AddSheet( ClassName, ctrl, nil, true, true )

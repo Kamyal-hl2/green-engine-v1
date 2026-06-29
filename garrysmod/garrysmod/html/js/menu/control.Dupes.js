@@ -103,3 +103,8 @@ function ControllerDupes($scope, $rootScope, $location, $timeout, $routeParams)
 		$scope.ResizeTimeout = $timeout( function() { $scope.ReloadView(); }, 250 );
 	} );
 }
+
+function OnGameSaved()
+{
+	Scope.Switch( 'local', 0 );
+}

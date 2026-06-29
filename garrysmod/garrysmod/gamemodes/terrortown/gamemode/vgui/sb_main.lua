@@ -18,14 +18,12 @@ surface.CreateFont("cool_small", {font = "coolvetica",
 surface.CreateFont("cool_large", {font = "coolvetica",
                                   size = 24,
                                   weight = 400})
-surface.CreateFont("treb_small", {font = "Tahoma",
+surface.CreateFont("treb_small", {font = "Trebuchet18",
                                   size = 14,
                                   weight = 700})
 
 CreateClientConVar("ttt_scoreboard_sorting", "name", true, false, "name | role | karma | score | deaths | ping")
 CreateClientConVar("ttt_scoreboard_ascending", "1", true, false, "Should scoreboard ordering be in ascending order")
-
-local time_limit_minutes = CreateConVar("ttt_time_limit_minutes", "75", FCVAR_REPLICATED)
 
 local logo = surface.GetTextureID("vgui/ttt/score_logo")
 
@@ -35,7 +33,7 @@ local max = math.max
 local floor = math.floor
 local function UntilMapChange()
    local rounds_left = max(0, GetGlobalInt("ttt_rounds_left", 6))
-   local time_left = floor(max(0, (time_limit_minutes:GetInt() * 60) - CurTime()))
+   local time_left = floor(max(0, ((GetGlobalInt("ttt_time_limit_minutes") or 60) * 60) - CurTime()))
 
    local h = floor(time_left / 3600)
    time_left = time_left - floor(h * 3600)
@@ -169,12 +167,13 @@ function PANEL:Init()
 
    -- the various score column headers
    self.cols = {}
-   self:AddColumn( GetTranslation("sb_ping"), nil, nil,             "ping" )
-   self:AddColumn( GetTranslation("sb_deaths"), nil, nil,           "deaths" )
-   self:AddColumn( GetTranslation("sb_score"), nil, nil,            "score" )
+   self:AddColumn( GetTranslation("sb_ping"), nil, nil,         "ping" )
+   self:AddColumn( GetTranslation("sb_deaths"), nil, nil,       "deaths" )
+   self:AddColumn( GetTranslation("sb_score"), nil, nil,        "score" )
 
-   local kh = self:AddColumn( GetTranslation("sb_karma"), nil, nil, "karma" )
-   kh.ShouldShow = KARMA.IsEnabled
+   if KARMA.IsEnabled() then
+      self:AddColumn( GetTranslation("sb_karma"), nil, nil,     "karma" )
+   end
 
    self.sort_headers = {}
    -- Reuse some translations
@@ -272,7 +271,7 @@ end
 local colors = {
    bg = Color(30,30,30, 235),
    bar = Color(220,180,0,255)
-}
+};
 
 local y_logo_off = 72
 
@@ -356,10 +355,6 @@ function PANEL:PerformLayout()
       v:SizeToContents()
       cx = cx - v.Width
       v:SetPos(cx - v:GetWide()/2, cy)
-
-      if v.ShouldShow then
-         v:SetVisible(v:ShouldShow())
-      end
    end
 
    -- sort headers

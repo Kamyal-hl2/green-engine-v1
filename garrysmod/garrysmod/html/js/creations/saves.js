@@ -1,7 +1,7 @@
 
 var IS_SPAWN_MENU = true;
 
-App = angular.module( 'CSavesApp', [ 'ngRoute', 'ngLocalize' ] );
+App = angular.module( 'CSavesApp', [ 'ngRoute', 'tranny' ] );
 
 App.config( function( $routeProvider, $compileProvider, $locationProvider, $controllerProvider )
 {
@@ -14,10 +14,12 @@ App.config( function( $routeProvider, $compileProvider, $locationProvider, $cont
 } );
 
 var CreationScope		= null;
+var CreationLocation	= null;
 
 function CSaves( $scope, $timeout, $location )
 {
 	CreationScope		= $scope;
+	CreationLocation	= $location;
 
 	CreationScope.MyCategories =
 	[
@@ -92,9 +94,9 @@ function WindowResized()
 	save.UpdatePageNav();
 
 	// Refresh HTML
-	save.DigestUpdateResize = setTimeout( function()
+	save.DigestUpdate = setTimeout( function()
 	{
-		self.DigestUpdateResize = 0;
+		self.DigestUpdate = 0;
 		Scope.Go( 0 );
 	}, 500 )
 }

@@ -9,8 +9,6 @@ ENT.Type = "anim"
 
 ENT.Spawnable = false
 
-ENT.WantsTranslucency = true
-
 function ENT:Initialize()
 
 	local Radius = 6
@@ -65,24 +63,22 @@ function ENT:Initialize()
 
 end
 
-function ENT:Draw( flags )
+function ENT:Draw()
 
-	-- Draw the actual model when we are grabbed by physics gun, etc.
 	if ( halo.RenderedEntity() == self ) then
-		self.AttachedEntity:DrawModel( flags )
+		self.AttachedEntity:DrawModel()
+		return
 	end
-
-end
-
-function ENT:DrawTranslucent( flags )
 
 	if ( GetConVarNumber( "cl_draweffectrings" ) == 0 ) then return end
 
 	-- Don't draw the grip if there's no chance of us picking it up
-	local wep = LocalPlayer():GetActiveWeapon()
+	local ply = LocalPlayer()
+	local wep = ply:GetActiveWeapon()
 	if ( !IsValid( wep ) ) then return end
 
 	local weapon_name = wep:GetClass()
+
 	if ( weapon_name != "weapon_physgun" && weapon_name != "gmod_tool" ) then
 		return
 	end

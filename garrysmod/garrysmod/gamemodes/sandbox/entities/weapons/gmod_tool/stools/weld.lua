@@ -105,7 +105,6 @@ function TOOL:RightClick( trace )
 
 		if ( !IsValid( trace.Entity ) ) then return false end
 		if ( trace.Entity:GetClass() == "prop_vehicle_jeep" ) then return false end
-		if ( trace.Entity:GetClass() == "prop_vehicle_apc" ) then return false end
 
 	end
 

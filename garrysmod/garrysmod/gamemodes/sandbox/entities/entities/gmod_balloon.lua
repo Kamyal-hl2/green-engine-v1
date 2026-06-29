@@ -20,6 +20,7 @@ function ENT:Initialize()
 	if ( CLIENT ) then return end
 
 	self:PhysicsInit( SOLID_VPHYSICS )
+	self:SetRenderMode( RENDERMODE_TRANSCOLOR )
 
 	-- Set up our physics object here
 	local phys = self:GetPhysicsObject()

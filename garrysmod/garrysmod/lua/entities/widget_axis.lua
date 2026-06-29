@@ -9,6 +9,12 @@ DEFINE_BASECLASS( "widget_arrow" )
 
 local widget_axis_arrow = { Base = "widget_arrow" }
 
+function widget_axis_arrow:Initialize()
+
+	BaseClass.Initialize( self )
+
+end
+
 function widget_axis_arrow:SetupDataTables()
 
 	BaseClass.SetupDataTables( self )
@@ -31,6 +37,12 @@ scripted_ents.Register( widget_axis_arrow, "widget_axis_arrow" )
 DEFINE_BASECLASS( "widget_disc" )
 
 local widget_axis_disc = { Base = "widget_disc" }
+
+function widget_axis_disc:Initialize()
+
+	BaseClass.Initialize( self )
+
+end
 
 function widget_axis_disc:SetupDataTables()
 
@@ -114,8 +126,8 @@ end
 function ENT:Draw()
 end
 
-function ENT:OverlayRender()
-end
-
 function ENT:OnArrowDragged( num, dist, pl, mv )
+
+	-- MsgN( num, dist, pl, mv )
+
 end

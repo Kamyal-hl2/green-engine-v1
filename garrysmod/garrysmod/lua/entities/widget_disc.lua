@@ -23,8 +23,7 @@ function ENT:PressedShouldDraw( widget ) return widget == self end
 
 function ENT:OverlayRender()
 
-	local angles = self:GetAngles()
-	local fwd = angles:Forward()
+	local fwd = self:GetAngles():Forward()
 	local size = self:GetSize()
 
 	local c = self:GetColor()
@@ -35,15 +34,14 @@ function ENT:OverlayRender()
 		c.b = c.b * 0.5
 	end
 
-	local pos = self:GetPos()
-	local ang = angles.roll - 90
+	local ang = self:GetAngles().roll - 90
 
 	render.DepthRange( 0, 0.01 )
 	render.SetMaterial( matDiscAlpha )
-	render.DrawQuadEasy( pos, fwd, size, size, Color( c.r, c.g, c.b, c.a * 0.2 ), ang )
+	render.DrawQuadEasy( self:GetPos(), fwd, size, size, Color( c.r, c.g, c.b, c.a * 0.2 ), ang )
 	render.DepthRange( 0, 1 )
 	render.SetMaterial( matDisc )
-	render.DrawQuadEasy( pos, fwd, size, size, c, ang )
+	render.DrawQuadEasy( self:GetPos(), fwd, size, size, Color( c.r, c.g, c.b, c.a ), ang )
 	render.DepthRange( 0, 1 )
 
 end
@@ -55,13 +53,11 @@ function ENT:TestCollision( startpos, delta, isbox, extents )
 
 	local fwd = self:GetAngles():Forward()
 	local size = self:GetSize() * 0.5
-	local pos = self:GetPos()
 
-	local hitpos = util.IntersectRayWithPlane( startpos, delta:GetNormalized(), pos, fwd )
+	local hitpos = util.IntersectRayWithPlane( startpos, delta:GetNormalized(), self:GetPos(), fwd )
 	if ( !hitpos ) then return end
 
-	local dist = pos:DistToSqr( hitpos )
-	size = size * size
+	local dist = self:GetPos():Distance( hitpos )
 	if ( dist > size ) then return end
 	if ( dist < size * 0.9 ) then return end
 
@@ -85,6 +81,9 @@ function ENT:DragThink( pl, mv, dist )
 end
 
 function ENT:ArrowDragged( pl, mv, dist )
+
+	-- MsgN( dist )
+
 end
 
 function ENT:GetGrabPos( Pos, Forward )
@@ -94,7 +93,7 @@ function ENT:GetGrabPos( Pos, Forward )
 	local arrowdir = self:GetAngles():Forward()
 
 	local planepos = self:GetPos()
-	--local planenrm = ( eye - planepos ):GetNormalized()
+	--local planenrm = ( eye - planepos ):GetNormal()
 
 	local hitpos = util.IntersectRayWithPlane( eye, fwd, planepos, arrowdir )
 	if ( !hitpos ) then return end

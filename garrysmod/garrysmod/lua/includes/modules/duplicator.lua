@@ -455,12 +455,12 @@ end
 --[[---------------------------------------------------------
    Restore's the bone's data
 -----------------------------------------------------------]]
-function DoBoneManipulator( ent, bones )
+function DoBoneManipulator( ent, Bones )
 
-	if ( !bones ) then return end
+	if ( !Bones ) then return end
 	if ( !IsValid( ent ) ) then return end
 
-	for k, v in pairs( bones ) do
+	for k, v in pairs( Bones ) do
 
 		if ( v.s ) then ent:ManipulateBoneScale( k, v.s ) end
 		if ( v.a ) then ent:ManipulateBoneAngles( k, v.a ) end
@@ -473,7 +473,7 @@ end
 --[[---------------------------------------------------------
    Generic function for duplicating stuff
 -----------------------------------------------------------]]
-function GenericDuplicatorFunction( ply, data )
+function GenericDuplicatorFunction( Player, data )
 
 	if ( !IsAllowed( data.Class ) ) then
 		-- MsgN( "duplicator: ", data.Class, " isn't allowed to be duplicated!" )
@@ -483,7 +483,7 @@ function GenericDuplicatorFunction( ply, data )
 	--
 	-- Is this entity 'admin only'?
 	--
-	if ( IsValid( ply ) and !ply:IsAdmin() ) then
+	if ( IsValid( Player ) and !Player:IsAdmin() ) then
 
 		if ( !scripted_ents.GetMember( data.Class, "Spawnable" ) ) then return end
 		if ( scripted_ents.GetMember( data.Class, "AdminOnly" ) ) then return end

@@ -51,12 +51,10 @@ function ENT:OverlayRender()
 		render.SetMaterial( matArrow )
 	end
 
-	local pos = self:GetPos()
-
 	render.DepthRange( 0, 0.01 )
-	render.DrawBeam( pos, pos + fwd * size, 2, 1, 0, Color( c.r, c.g, c.b, c.a * 0.1 ) )
+	render.DrawBeam( self:GetPos(), self:GetPos() + fwd * size, 2, 1, 0, Color( c.r, c.g, c.b, c.a * 0.1 ) )
 	render.DepthRange( 0, 1 * self:GetPriority() )
-	render.DrawBeam( pos, pos + fwd * size, 2, 1, 0, c )
+	render.DrawBeam( self:GetPos(), self:GetPos() + fwd * size, 2, 1, 0, Color( c.r, c.g, c.b, c.a ) )
 	render.DepthRange( 0, 1 )
 
 end
@@ -92,6 +90,9 @@ function ENT:DragThink( pl, mv, dist )
 end
 
 function ENT:ArrowDragged( pl, mv, dist )
+
+	-- MsgN( dist )
+
 end
 
 function ENT:GetGrabPos( Pos, Forward )

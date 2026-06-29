@@ -3,7 +3,6 @@ AddCSLuaFile()
 
 ENT.Type = "anim"
 ENT.RenderGroup = RENDERGROUP_OTHER
-ENT.DisableDuplicator = true
 
 function ENT:Initialize()
 

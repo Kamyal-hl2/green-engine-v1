@@ -9,9 +9,6 @@ local rt_Blur		= render.GetScreenEffectTexture( 1 )
 
 local List = {}
 local RenderEnt = NULL
--- TODO: Remove "or 0" after some update
--- There's no point in filling the real value of STUDIO_SKIP_DECALS as the current client doesn't support it anyway
-local modelFlags = bit.bor( STUDIO_RENDER, STUDIO_SKIP_DECALS or 0 )
 
 function Add( entities, color, blurx, blury, passes, add, ignorez )
 
@@ -76,7 +73,7 @@ function Render( entry )
 
 						RenderEnt = v
 
-						v:DrawModel( modelFlags )
+						v:DrawModel()
 					end
 
 					RenderEnt = NULL

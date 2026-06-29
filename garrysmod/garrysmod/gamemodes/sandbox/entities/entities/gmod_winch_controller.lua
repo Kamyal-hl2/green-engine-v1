@@ -100,8 +100,8 @@ function ENT:Think()
 
 	self.current_length = current_length
 
-	self.constraint:Fire( "SetSpringLength", current_length )
-	if ( self.rope ) then self.rope:Fire( "SetLength", current_length ) end
+	self.constraint:Fire( "SetSpringLength", current_length, 0 )
+	if ( self.rope ) then self.rope:Fire( "SetLength", current_length, 0 ) end
 
 	return true
 

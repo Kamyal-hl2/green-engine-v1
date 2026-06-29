@@ -44,10 +44,6 @@ Subscriptions.prototype.Unsubscribe = function( wsid )
 {
 	lua.Run( "steamworks.Unsubscribe( %s )", String( wsid ) );
 }
-Subscriptions.prototype.MarkUnused = function( wsid )
-{
-	lua.Run( "steamworks.MarkDownloadedItemAsUnused( %s )", String( wsid ) );
-}
 
 Subscriptions.prototype.ApplyChanges = function()
 {

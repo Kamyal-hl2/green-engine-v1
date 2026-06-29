@@ -11,7 +11,9 @@ function DermaMenu( parentmenu, parent )
 
 	if ( !parentmenu ) then CloseDermaMenus() end
 
-	return vgui.Create( "DMenu", parent )
+	local dmenu = vgui.Create( "DMenu", parent )
+
+	return dmenu
 
 end
 

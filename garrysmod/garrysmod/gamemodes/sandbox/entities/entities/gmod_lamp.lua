@@ -60,9 +60,8 @@ local defaultAngle = Angle( 0, 0, 0 )
 function ENT:GetLightInfo()
 
 	local lightInfo = {}
-	local lampEntry = list.GetEntry( "LampModels", self:GetModel() )
-	if ( lampEntry ) then
-		lightInfo = lampEntry
+	if ( list.Get( "LampModels" )[ self:GetModel() ] ) then
+		lightInfo = list.Get( "LampModels" )[ self:GetModel() ]
 	end
 
 	lightInfo.Offset = lightInfo.Offset or defaultOffset

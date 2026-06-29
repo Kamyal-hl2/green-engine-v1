@@ -8,7 +8,7 @@ surface.CreateFont("TabLarge",    {font = "Tahoma",
                                    size = 13,
                                    weight = 700,
                                    shadow = true, antialias = false})
-surface.CreateFont("Trebuchet22", {font = "Tahoma",
+surface.CreateFont("Trebuchet22", {font = "Trebuchet MS",
                                    size = 22,
                                    weight = 900})
 
@@ -86,9 +86,7 @@ function GM:HUDClear()
 end
 
 KARMA = {}
-
-local ttt_karma = CreateConVar("ttt_karma", "1", FCVAR_REPLICATED)
-function KARMA.IsEnabled() return ttt_karma:GetBool() end
+function KARMA.IsEnabled() return GetGlobalBool("ttt_karma", false) end
 
 function GetRoundState() return GAMEMODE.round_state end
 
@@ -99,7 +97,7 @@ local function RoundStateChange(o, n)
       GAMEMODE:CleanUpMap()
 
       -- show warning to spec mode players
-      if GetConVar("ttt_spectator_mode"):GetBool() and IsValid(LocalPlayer()) then
+      if GetConVar("ttt_spectator_mode"):GetBool() and IsValid(LocalPlayer())then
          LANG.Msg("spec_mode_warning")
       end
 
@@ -150,7 +148,7 @@ CreateConVar("ttt_cl_soundcues", "0", FCVAR_ARCHIVE)
 local cues = {
    Sound("ttt/thump01e.mp3"),
    Sound("ttt/thump02e.mp3")
-}
+};
 local function PlaySoundCue()
    if GetConVar("ttt_cl_soundcues"):GetBool() then
       surface.PlaySound(table.Random(cues))
@@ -332,7 +330,6 @@ end
 
 
 -- Simple client-based idle checking
-local ttt_idle_limit = CreateConVar("ttt_idle_limit", "180", FCVAR_REPLICATED)
 local idle = {ang = nil, pos = nil, mx = 0, my = 0, t = 0}
 function CheckIdle()
    local client = LocalPlayer()
@@ -350,8 +347,8 @@ function CheckIdle()
    end
 
    if GetRoundState() == ROUND_ACTIVE and client:IsTerror() and client:Alive() then
-      local idle_limit = ttt_idle_limit:GetInt()
-      if idle_limit <= 0 then return end
+      local idle_limit = GetGlobalInt("ttt_idle_limit", 300) or 300
+      if idle_limit <= 0 then idle_limit = 300 end -- networking sucks sometimes
 
 
       if client:GetAngles() != idle.ang then

@@ -75,8 +75,8 @@ function sql.QueryValue( query )
 
 	if ( r ) then
 
-		local _, v = next( r )
-		return v
+		-- Is this really the best way to get the first/only value in a table
+		for k, v in pairs( r ) do return v end
 
 	end
 

@@ -1,5 +1,5 @@
 
-local ErrorNoHaltWithStack = ErrorNoHaltWithStack
+local Msg			= Msg
 local type			= type
 local pairs			= pairs
 local gmod			= gmod
@@ -83,15 +83,8 @@ local function GetTypeStr( name )
 	if ( name == "ConVar" ) then return TYPE_NONE end
 	if ( name == "PhysObj" ) then return TYPE_NONE end
 
-	-- Maybe we should save these?
-	if ( name == "CSoundPatch" ) then return TYPE_NONE end
-
-	-- These are not individual instances, so don't try to save them in case some mod erroneously stores them
-	if ( name == "CTakeDamageInfo" ) then return TYPE_NONE end
-	if ( name == "CEffectData" ) then return TYPE_NONE end
-
 	-- Bitch about it incase I've forgot to hook a savable type up
-	ErrorNoHaltWithStack( "Can't save or load unknown type " .. name .. "\n" )
+	Msg( "Can't save or load unknown type " .. name .. "\n" )
 	return TYPE_NONE
 
 end
@@ -170,7 +163,7 @@ function WriteVar( var, save )
 		elseif ( itype == TYPE_TABLE ) then
 			WriteTable( var, save )
 		else
-			ErrorNoHaltWithStack( "Error! Saving unsupported Type: " .. type( var ) .. "\n" )
+			Msg( "Error! Saving unsupported Type: " .. type( var ) .. "\n" )
 		end
 
 	save:EndBlock()
@@ -204,7 +197,7 @@ function ReadVar( restore )
 		elseif ( itype == TYPE_TABLE ) then
 			retval = ReadTable( restore )
 		else
-			ErrorNoHaltWithStack( "Error! Loading unsupported Type: " .. typename .. "\n" )
+			Msg( "Error! Loading unsupported Type: " .. typename .. "\n" )
 		end
 
 	restore:EndBlock()

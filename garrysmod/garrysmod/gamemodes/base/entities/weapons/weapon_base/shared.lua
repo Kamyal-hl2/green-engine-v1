@@ -55,7 +55,7 @@ function SWEP:PrimaryAttack()
 
 	-- Punch the player's view
 	local owner = self:GetOwner()
-	if ( IsValid( owner ) and !owner:IsNPC() ) then owner:ViewPunch( Angle( -1, 0, 0 ) ) end
+	if ( !owner:IsNPC() ) then owner:ViewPunch( Angle( -1, 0, 0 ) ) end
 
 end
 
@@ -79,7 +79,7 @@ function SWEP:SecondaryAttack()
 
 	-- Punch the player's view
 	local owner = self:GetOwner()
-	if ( IsValid( owner ) and !owner:IsNPC() ) then owner:ViewPunch( Angle( -10, 0, 0 ) ) end
+	if ( !owner:IsNPC() ) then owner:ViewPunch( Angle( -10, 0, 0 ) ) end
 
 end
 
@@ -135,9 +135,6 @@ end
 -----------------------------------------------------------]]
 function SWEP:ShootBullet( damage, num_bullets, aimcone, ammo_type, force, tracer )
 
-	-- Effects first, in case the owner dies during firebullets call
-	self:ShootEffects()
-
 	local owner = self:GetOwner()
 
 	local bullet = {}
@@ -153,6 +150,8 @@ function SWEP:ShootBullet( damage, num_bullets, aimcone, ammo_type, force, trace
 	bullet.Inflictor = self
 
 	owner:FireBullets( bullet )
+
+	self:ShootEffects()
 
 end
 

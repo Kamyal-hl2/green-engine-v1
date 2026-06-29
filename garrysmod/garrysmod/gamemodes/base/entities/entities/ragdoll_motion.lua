@@ -107,7 +107,7 @@ function ENT:OnRemove()
 
 end
 
-function ENT:Draw( flags )
+function ENT:Draw()
 
 	--
 	-- Don't draw if we're holding the camera
@@ -118,7 +118,7 @@ function ENT:Draw( flags )
 		return
 	end
 
-	self:DrawModel( flags )
+	self:DrawModel()
 
 end
 
@@ -219,7 +219,7 @@ function ENT:SetRagdoll( ragdoll )
 		local controller = self:GetController()
 		if ( !IsValid( controller ) ) then return end
 
-		local builder = list.GetEntry( "SkeletonConvertor", buildername )
+		local builder = list.Get( "SkeletonConvertor" )[ buildername ]
 		local scale = self:GetScale()
 		local rotation = self:GetAngles()
 		local center = self:GetPos()

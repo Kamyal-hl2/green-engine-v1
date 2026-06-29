@@ -15,7 +15,10 @@ jobs:
       - name: Install build dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y python3 git build-essential wget unzip
+          sudo apt-get install -y python3 git build-essential wget unzip \
+            libbz2-dev libsdl2-dev libfreetype6-dev libfontconfig1-dev \
+            libopenal-dev libjpeg-dev libpng-dev libcurl4-gnutls-dev \
+            libedit-dev pkg-config
 
       - name: Cache NDK r10e
         id: cache-ndk

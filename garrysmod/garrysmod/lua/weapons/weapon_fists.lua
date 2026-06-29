@@ -61,10 +61,7 @@ end
 
 function SWEP:UpdateNextIdle()
 
-	local owner = self:GetOwner()
-	if ( not owner:IsPlayer() ) then return end
-
-	local vm = owner:GetViewModel()
+	local vm = self:GetOwner():GetViewModel()
 	self:SetNextIdle( CurTime() + vm:SequenceDuration() / vm:GetPlaybackRate() )
 
 end
@@ -81,10 +78,8 @@ function SWEP:PrimaryAttack( right )
 		anim = "fists_uppercut"
 	end
 
-	if ( owner:IsPlayer() ) then
-		local vm = owner:GetViewModel()
-		vm:SendViewModelMatchingSequence( vm:LookupSequence( anim ) )
-	end
+	local vm = owner:GetViewModel()
+	vm:SendViewModelMatchingSequence( vm:LookupSequence( anim ) )
 
 	self:EmitSound( self.SwingSound )
 
@@ -108,7 +103,7 @@ function SWEP:DealDamage()
 
 	local owner = self:GetOwner()
 
-	local anim = self:GetSequenceName( owner:GetViewModel():GetSequence() )
+	local anim = self:GetSequenceName(owner:GetViewModel():GetSequence())
 
 	owner:LagCompensation( true )
 
@@ -146,7 +141,6 @@ function SWEP:DealDamage()
 		dmginfo:SetAttacker( attacker )
 
 		dmginfo:SetInflictor( self )
-		dmginfo:SetWeapon( self )
 
 		local dmg = self.HitDamage
 
@@ -161,13 +155,12 @@ function SWEP:DealDamage()
 
 		dmginfo:SetDamage( istable( dmg ) and math.random( dmg[ 1 ], dmg[ 2 ] ) or dmg )
 
-		dmginfo:SetDamagePosition( tr.HitPos )
-
 		SuppressHostEvents( NULL ) -- Let the breakable gibs spawn in multiplayer on client
 		tr.Entity:TakeDamageInfo( dmginfo )
 		SuppressHostEvents( owner )
 
 		hit = true
+
 	end
 
 	if ( IsValid( tr.Entity ) ) then

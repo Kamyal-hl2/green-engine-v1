@@ -1,6 +1,6 @@
 ---- Spanish language strings
 
-local L = LANG.CreateLanguage("Español", "es-ES")
+local L = LANG.CreateLanguage("Español")
 
 --- General text used in various places
 L.traitor    = "Traidor"

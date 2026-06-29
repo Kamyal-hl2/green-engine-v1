@@ -16,7 +16,7 @@ if CLIENT then
    SWEP.EquipMenuData = {
       type = "item_weapon",
       desc = "dna_desc"
-   }
+   };
 
    SWEP.Icon               = "vgui/ttt/icon_wtester"
 end
@@ -716,7 +716,7 @@ if CLIENT then
 
       RADAR.samples = {
          {pos = target_pos}
-      }
+      };
 
       RADAR.samples_count = 1
 
@@ -789,9 +789,9 @@ function SWEP:Deploy()
 end
 
 if CLIENT then
-   function SWEP:DrawWorldModel(flags)
+   function SWEP:DrawWorldModel()
       if not IsValid(self:GetOwner()) then
-         self:DrawModel(flags)
+         self:DrawModel()
       end
    end
 end

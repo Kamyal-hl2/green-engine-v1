@@ -318,12 +318,11 @@ function PANEL:CheckNumeric( strValue )
 
 end
 
--- Backwards compatibility. Do not use.
 function PANEL:SetDisabled( bDisabled )
 	self:SetEnabled( !bDisabled )
 end
 
-function PANEL:GetDisabled()
+function PANEL:GetDisabled( bDisabled )
 	return !self:IsEnabled()
 end
 

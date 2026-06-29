@@ -64,8 +64,8 @@ function ControllerDemos( $scope, $element, $rootScope, $location )
 
 	$scope.DeleteLocal = function ( entry )
 	{
-		gmod.DeleteLocal( entry.info.file );
-		gmod.DeleteLocal( entry.background );
+		lua.Run( "file.Delete( %s, \"MOD\" )", entry.info.file );
+		lua.Run( "file.Delete( %s, \"MOD\" )", entry.background );
 
 		$scope.Switch( $scope.Category, $scope.Offset );
 	}

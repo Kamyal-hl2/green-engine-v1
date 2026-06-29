@@ -14,7 +14,7 @@ if CLIENT then
    SWEP.EquipMenuData = {
       type = "item_weapon",
       desc = "decoy_desc"
-   }
+   };
 
    SWEP.Icon                = "vgui/ttt/icon_beacon"
 end
@@ -178,11 +178,11 @@ function SWEP:Deploy()
    return true
 end
 
-function SWEP:DrawWorldModel(flags)
+function SWEP:DrawWorldModel()
    if not IsValid(self:GetOwner()) then
-      self:DrawModel(flags)
+      self:DrawModel()
    end
 end
 
-function SWEP:DrawWorldModelTranslucent(flags)
+function SWEP:DrawWorldModelTranslucent()
 end

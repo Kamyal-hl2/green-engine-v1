@@ -79,7 +79,7 @@ function PANEL:Init()
 	self.Publish.DoClick = function( s ) self:DoPublish() end
 
 	self.UpdateProgress = self:Add( "DLabel" )
-	self.UpdateProgress:SetText( "#ugc_upload.publishing" )
+	self.UpdateProgress:SetText( "Publising your content, please wait..." )
 	self.UpdateProgress:SetTextColor( color_black )
 	self.UpdateProgress:SetContentAlignment( 5 )
 	self.UpdateProgress:SetZPos( 100 )
@@ -245,7 +245,6 @@ errors[ "badupdatehandle" ] = "Generic error while trying to update item."
 errors[ "badsubmitupdatehandle" ] = "Could not submit update to Steam."
 errors[ "cantupdate" ] = "Failed to upload workshop files to Steam."
 errors[ "badwords" ] = "Please refrain from uploading spam, vulgar, sexual or offensive content to Steam Workshop."
-errors[ "termsofservice" ] = "You must accept Steam Workshop Terms of Service before you can upload content!\nWould you like to open it right now?"
 
 function PANEL:DisplayError( err )
 	-- Unlock the UI and allow user to try again/make changes
@@ -253,15 +252,16 @@ function PANEL:DisplayError( err )
 	self:SetMouseInputEnabled( true )
 
 	if ( err == "termsofservice" ) then
-		Derma_Query( errors[ err ], "#ugc_upload.error.title", "#openurl.yes", function()
+		err = "You must accept Steam Workshop Terms of Service before you can upload content!\nWould you like to open it right now?"
+		Derma_Query( err, "Error while publishing content!", "Yes", function()
 			gui.OpenURL( "http://steamcommunity.com/sharedfiles/workshoplegalagreement" )
-		end, "#openurl.nope" )
+		end, "Nah" )
 		return
 	end
 
 	if ( errors[ err ] ) then err = errors[ err ] end
 
-	Derma_Message( err or "#ugc_upload.error.title", "#ugc_upload.error.title", "#preset.okay" )
+	Derma_Message( err or "UNKNOWN ERROR", "Error while publishing content!", "OK" )
 end
 
 function PANEL:OnPublishFinished( wsid, err )

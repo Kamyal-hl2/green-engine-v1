@@ -26,22 +26,19 @@ SWEP.InfoBoxHeight = 0
 surface.CreateFont( "GModToolName", {
 	font = "Roboto Bk",
 	size = 80,
-	weight = 1000,
-	extended = true
+	weight = 1000
 } )
 
 surface.CreateFont( "GModToolSubtitle", {
 	font = "Roboto Bk",
 	size = 24,
-	weight = 1000,
-	extended = true
+	weight = 1000
 } )
 
 surface.CreateFont( "GModToolHelp", {
 	font = "Roboto Bk",
 	size = 17,
-	weight = 1000,
-	extended = true
+	weight = 1000
 } )
 
 --[[---------------------------------------------------------
@@ -54,9 +51,6 @@ function SWEP:DrawHUD()
 
 	-- Don't draw help for a nonexistant tool!
 	if ( !toolObject ) then return end
-
-	-- Do not draw help when in a vehicle unless allowed
-	if ( LocalPlayer() and IsValid( LocalPlayer():GetVehicle() ) and not LocalPlayer():GetAllowWeaponsInVehicle() ) then return end
 
 	toolObject:DrawHUD()
 

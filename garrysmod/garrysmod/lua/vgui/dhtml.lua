@@ -12,10 +12,10 @@ function PANEL:Init()
 	self.JS = {}
 	self.Callbacks = {}
 
-	if ( self:GetClassName() != "HtmlPanel" ) then
-		-- Implement a console.log - because awesomium doesn't provide it for us anymore.
-		self:AddFunction( "console", "log", function( param ) self:ConsoleMessage( param ) end )
-	end
+	--
+	-- Implement a console.log - because awesomium doesn't provide it for us anymore.
+	--
+	self:AddFunction( "console", "log", function( param ) self:ConsoleMessage( param ) end )
 
 end
 
@@ -63,7 +63,7 @@ function PANEL:Call( js )
 	self:QueueJavascript( js )
 end
 
-function PANEL:ConsoleMessage( msg, file, line, severity )
+function PANEL:ConsoleMessage( msg, file, line )
 
 	if ( !isstring( msg ) ) then msg = "*js variable*" end
 
@@ -73,31 +73,17 @@ function PANEL:ConsoleMessage( msg, file, line, severity )
 	if ( isstring( file ) && isnumber( line ) ) then
 
 		if ( #file > 64 ) then
-			local urlParamPos = string.find( file, "?", 0, true )
-			if ( urlParamPos ) then
-				file = string.sub( file, 1, 32 ) .. "..." .. string.sub( file, urlParamPos - 32, urlParamPos - 1 )
-			else
-				file = string.sub( file, 1, 32 ) .. "..." .. string.sub( file, -32 )
-			end
+			file = string.sub( file, 1, 64 ) .. "..."
 		end
 
 		MsgC( Color( 255, 160, 255 ), "[HTML] " )
-		if ( severity == "debug" ) then
-			MsgC( Color( 160, 160, 160, 255 ), "[Debug] " )
-		elseif ( severity == "warn" ) then
-			MsgC( Color( 255, 255, 90, 255 ), "[Warn]  " )
-		elseif ( severity == "error" ) then
-			MsgC( Color( 255, 90, 90, 255 ), "[Error] " )
-		end
-
-		MsgC( Color( 210, 210, 210 ), file, ":", line, ": " )
-		MsgC( Color( 255, 255, 255 ), msg, "\n" )
+		MsgC( Color( 255, 255, 255 ), file, ":", line, ": ", msg, "\n" )
 		return
 
 	end
 
 	--
-	-- Handle old style Lua execution
+	-- Handle Lua execution
 	--
 	if ( self.m_bAllowLua && msg:StartsWith( "RUNLUA:" ) ) then
 
@@ -195,4 +181,4 @@ end
 function PANEL:OnChangeTargetURL( url )
 end
 
-derma.DefineControl( "DHTML", "A shape", PANEL, "HTML" )
+derma.DefineControl( "DHTML", "A shape", PANEL, "Awesomium" )

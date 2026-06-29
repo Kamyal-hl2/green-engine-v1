@@ -120,10 +120,11 @@ list.Set( "DesktopWindows", "PlayerEditor", {
 
 			if ( !panel or !IsValid( panel.Entity ) ) then return end
 
-			local anim = default_animations[ math.random( 1, #default_animations ) ]
+			local anims = list.Get( "PlayerOptionsAnimations" )
 
-			local anims = list.GetEntry( "PlayerOptionsAnimations", playermodel )
-			if ( anims ) then
+			local anim = default_animations[ math.random( 1, #default_animations ) ]
+			if ( anims[ playermodel ] ) then
+				anims = anims[ playermodel ]
 				anim = anims[ math.random( 1, #anims ) ]
 			end
 

@@ -88,9 +88,7 @@ function PANEL:PerformLayout( w, h )
 				local fsize = math.floor( math.Remap( targetH, 256, 512, 48, 64 ) )
 				self.FingerVars[ ID ]:SetSize( fsize, fsize )
 
-				local PosX = Pos[1]
-				if ( self.Hand != 0 ) then PosX = 1 - PosX end
-				self.FingerVars[ ID ]:SetPos( bgXoffset + PosX * size - fsize / 2, Pos[2] * size - fsize / 2 )
+				self.FingerVars[ ID ]:SetPos( bgXoffset + Pos[1] * size - fsize / 2, Pos[2] * size - fsize / 2 )
 			end
 
 		end
@@ -111,11 +109,7 @@ function PANEL:Paint( w, h )
 
 	render.PushFilterMag( TEXFILTER.ANISOTROPIC )
 	render.PushFilterMin( TEXFILTER.ANISOTROPIC )
-		if ( self.Hand == 0 ) then
-			surface.DrawTexturedRect( w / 2 - size / 2, 0, size, size )
-		else
-			surface.DrawTexturedRectUV( w / 2 - size / 2, 0, size, size, 1, 0, 0, 1 )
-		end
+		surface.DrawTexturedRect( w / 2 - size / 2, 0, size, size )
 	render.PopFilterMag()
 	render.PopFilterMin()
 

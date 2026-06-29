@@ -148,14 +148,14 @@ end
 -----------------------------------------------------------]]
 local function DoDieFunction( ent )
 
-	if ( !ent.OnDieFunctions ) then return end
+	if ( !ent or !ent.OnDieFunctions ) then return end
 
-	for name, data in pairs( ent.OnDieFunctions ) do
+	for k, v in pairs( ent.OnDieFunctions ) do
 
 		-- Functions aren't saved - so this could be nil if we loaded a game.
-		if ( data && data.Function ) then
+		if ( v && v.Function ) then
 
-			ProtectedCall( data.Function, ent, unpack( data.Args ) )
+			v.Function( ent, unpack( v.Args ) )
 
 		end
 

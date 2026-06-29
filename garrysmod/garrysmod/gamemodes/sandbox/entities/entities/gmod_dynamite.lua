@@ -17,8 +17,6 @@ function ENT:Initialize()
 
 	if ( SERVER ) then
 		self:PhysicsInit( SOLID_VPHYSICS )
-
-		self.QueuedExplosions = {}
 	end
 
 end
@@ -29,36 +27,10 @@ function ENT:Setup( damage )
 
 end
 
-if ( SERVER ) then
-	function ENT:Think()
-
-		self:HandleQueuedExplosions()
-
-		-- Only think often if we have any events queued (default was 0.2)
-		-- We could also probably use the soonest timer as the delay here..
-		self:NextThink( CurTime() + ( self.AnyQueued and 0.05 or 1 ) )
-		return true
-
-	end
-
-	function ENT:HandleQueuedExplosions()
-
-		for k, v in ipairs( self.QueuedExplosions ) do
-			if ( v.when <= CurTime() ) then
-				self:Explode( 0, v.player )
-				table.remove( self.QueuedExplosions, k )
-			end
-		end
-
-		self.AnyQueued = #self.QueuedExplosions > 0
-
-	end
-end
-
 function ENT:GetOverlayText()
 
 	local txt = string.format( "%s %g\n%s %g",
-		language.GetPhrase( "#tool.dynamite.damage" ), math.Clamp( self:GetDamage(), 0, 1500 ),
+		language.GetPhrase( "#tool.dynamite.damage" ), math.Clamp( self:GetDamage(), 0, 1500 ), 
 		language.GetPhrase( "#tool.dynamite.delay" ), self:GetDelay() )
 
 	if ( game.SinglePlayer() ) then return txt end
@@ -69,8 +41,7 @@ end
 
 function ENT:OnTakeDamage( dmginfo )
 
-	local inflictor = dmginfo:GetInflictor()
-	if ( IsValid( inflictor ) and inflictor:GetClass() == "gmod_dynamite" ) then return end
+	if ( dmginfo:GetInflictor():GetClass() == "gmod_dynamite" ) then return end
 
 	self:TakePhysicsDamage( dmginfo )
 
@@ -79,18 +50,15 @@ end
 --
 -- Blow that mother fucker up, BAATCHH
 --
-function ENT:Explode( delayOverride, ply )
+function ENT:Explode( delay, ply )
 
 	if ( !IsValid( self ) ) then return end
 
 	if ( !IsValid( ply ) ) then ply = self end
 
-	local delay = delayOverride or self:GetDelay()
+	local _delay = delay or self:GetDelay()
 
-	-- You do not a timer longer than this.
-	if ( delay > 3600 ) then delay = 3600 end
-
-	if ( delay == 0 ) then
+	if ( _delay == 0 ) then
 
 		local radius = 300
 
@@ -105,9 +73,7 @@ function ENT:Explode( delayOverride, ply )
 
 	else
 
-		-- Queue the explosion
-		table.insert( self.QueuedExplosions, { when = CurTime() + delay, player = ply } )
-		self:NextThink( CurTime() )
+		timer.Simple( _delay, function() if ( !IsValid( self ) ) then return end self:Explode( 0, ply ) end )
 
 	end
 
